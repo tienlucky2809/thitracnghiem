@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="admin/common/template">
+<head>
+    <meta charset="UTF-8"/>
+    <title>ADD CATEGORY</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.js"></script>
+    <script>
+        $(document).ready(function () { // lay ra id tu category chuyen xuong servel de lay tat ca Subcategory
+            var categoryID =0;
+            $("#category-Id").change(function () { // bat su kien thay doi selectio
+                // alert($("#category-Id option:selected").val())
+                 categoryID=$("#category-Id option:selected").val(); // lay ra gia tri cua selection
+                console.log('category id : '+categoryID)
+                var dataToServer={};                                      // tao ra mang doi tuong json
+                dataToServer['categoryParentId']=categoryID;                // set su lieu vao mang json
+                console.log("du lieu kieu json gui ve server :"+JSON.stringify(dataToServer))
+
+                $.ajax({
+                    url:window.location.origin+"/api/admin/category/sub",
+                    type : 'post',
+                    data:JSON.stringify(dataToServer),   // su lieu truyen vao
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success:function (data) {
+                        $("#subCategoryId").empty() ;//to reset selection
+                        $("#subCategoryId").append("<option>--SELECT--</option>");
+
+                        for (let i=0;i<data.length;i++){
+
+                            $("#subCategoryId").append("<option value="+data[i].id+">"+data[i].name+"</option>")
+                        }
+                    }
+                })
+            })
+        })
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#getCategoty').click(function () {
+                console.log()
+                console.log($("#category-Id option:selected").val())
+                console.log($("#subCategoryId option:selected").val())
+                console.log($("#levelId option:selected").val())
+
+                var subCategoryId=$("#subCategoryId option:selected").val();
+                var level = $("#levelId option:selected").val()
+                var dataToServer = {};
+                dataToServer['level']=level;
+                dataToServer['categoryId']=subCategoryId;
+                console.log('du lieu gui len servel : '+JSON.stringify(dataToServer))
+
+                $.ajax({
+                  url: window.location.origin+"/api/admin/question/search",
+                  type: 'post',
+                  data: JSON.stringify(dataToServer),
+                  contentType: 'application/json; charset=utf-8',
+                  dataType: 'json',
+                  success :function (data) {
+                      console.log('so luong phan tu : '+data.length)
+                      console.log(data[1])
+                       
+                  }
+                })
+            });
+        })
+    </script>
+
+</head>
+<body>
+<div class="container-fluid" layout:fragment="body">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex flex-row">
+            <h2 class="font-weight-light">Them bai thi</h2>
+
+        </div>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 flex-row ">
+                    <p> Chon chu de  </p><br>
+                    <select id="category-Id" >
+                        <option value="0">--none--</option>
+                        <option th:each="category:${listCategory}"  th:utext="${category.name}" th:value="${category.id}"></option>
+                    </select>
+                    <p style="margin-top: 1%">sub category</p><br>
+                    <select id="subCategoryId" >
+                    </select>
+                    <br>
+                    <p style="margin-top: 1%">lervel</p><br>
+                    <select id="levelId" >
+                        <option value="1">Level 1</option>
+                        <option value="2">Level 2</option>
+                        <option value="3">Level 3</option>
+                    </select>
+                    <br>
+                    <button id="getCategoty" style="margin-top: 1%">Get category , level</button><br><br>
+                    <b>Danh sach cau hoi lay tu datab</b>
+                    <table class="table" id="tableQuestion" style="margin-left: 3% ; margin-right: 3% ;margin-top: 2%">
+                        <thead>
+                        <tr style="text-align: center;">
+                            <th style="vertical-align: middle;">STT </th>
+                            <th style="vertical-align: middle;" width="60%">Nội Dung  </th>
+                            <th style="vertical-align: middle;">Câu trả lời </th>
+                            <th style="vertical-align: middle;">Điểm  </th>
+                            <th style="vertical-align: middle;">Tích để thêm câu hỏi </th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- Card Body -->
+                <div  style="margin-right: 40%" >
+                    <div class="d-flex justify-content-center" style="margin-top: 5%">
+                        <div class="d-flex flex-column">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+</div>
+</body>
+
+</html>

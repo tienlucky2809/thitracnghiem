@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html layout:decorator="admin/common/template" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>LIST CATEGORY</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/dataTables.jqueryui.min.css"/>
+
+    <script defer type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script defer type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/dataTables.jqueryui.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.body #test').DataTable();
+        });
+    </script>
+
+    <script type="text/javascript">
+        function onclickFunction(id) {
+            if (confirm("Delete User?") == true) {
+                $.ajax({
+                    type: "delete",
+                    url: "http://localhost:8080/admin/usermanager/" + id,
+                    dataType: "text",
+                    success: function () {
+                        window.location.reload();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr);
+                    }
+                });
+            } else {
+                return false;
+            }
+        };
+    </script>
+</head>
+<body>
+<div class="container-fluid" layout:fragment="body">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">LIST USER</h1>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                </div>
+                <!-- Card Body -->
+                <div class="card-body container body">
+                    <div style="margin-bottom: 30px;">
+                        <input class="form-control" id="search" type="text" placeholder="Search..">
+                    </div>
+                    <div>
+                        <table class="table" id="test" width="100%">
+                            <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Edit Role</th>
+                                <th>Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="user : ${users}">
+                                <td th:utext="${userStat.index} + 1"></td>
+                                <td th:utext="${user.userId}"></td>
+                                <td th:utext="${user.userName}"></td>
+<!--                               <td th:utext="${user.roleId}"></td>-->
+                              <td><a th:href="@{'admin/usermanager/'+ ${user.userId}}">Edit</a>  ||
+                                   <a   href="#" th:onclick="|onclickFunction('${user.userId}')|">Delete</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+</div>
+<script>
+
+    $("#search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+
+        console.log(value)
+    });
+</script>
+</body>
+</html>

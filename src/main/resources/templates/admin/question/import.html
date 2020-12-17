@@ -1,0 +1,360 @@
+﻿<!DOCTYPE html>
+<html layout:decorator="admin/common/template" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>ADD QUESTION</title>
+    <script th:src="@{/admin/js/question-add.js}" type="text/javascript"></script>
+    <style type="text/css">
+        body {
+            font-family: Arial;
+            font-size: 10pt;
+        }
+
+        table {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background-color: #F7F7F7;
+            color: #333;
+            font-weight: bold;
+        }
+
+        table th, table td {
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-latest.js"></script>
+    <style type="text/css">
+        table tr th {
+            text-align: left;
+            width: 150px;
+        }
+
+        .submit {
+            margin-top: 20px;
+        }
+    </style>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"
+            type="text/javascript"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js" type="text/javascript"></script>
+
+</head>
+<body>
+<div class="container-fluid" layout:fragment="body">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">ADD QUESTION</h1>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6" id="question">
+                            <input id="fileUploadQuestion" type="file"/>
+                            <button id="uploadQuestion">Upload</button>
+                            <hr/>
+                            <div id="dvExcelQuestion">
+                            </div>
+                        </div>
+                        <div class="col-lg-6" id="answer">
+                            <input id="fileUploadAnswer" type="file"/>
+                            <input id="uploadAnswer" type="button" value="Upload"/>
+                            <hr/>
+                            <div id="dvExcelAnswer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" text-center submit">
+                        <button id="click">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+    <script type="text/javascript">
+        $(".card-body .row #uploadQuestion").click(function () {
+            //Reference the FileUpload element.
+            var fileUpload = $("#fileUploadQuestion")[0];
+
+            //Validate whether File is valid Excel file.
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+            if (regex.test(fileUpload.value.toLowerCase())) {
+                if (typeof (FileReader) != "undefined") {
+                    var reader = new FileReader();
+
+                    //For Browsers other than IE.
+                    if (reader.readAsBinaryString) {
+                        reader.onload = function (e) {
+                            ProcessExcelQuestion(e.target.result);
+                        };
+                        reader.readAsBinaryString(fileUpload.files[0]);
+                    } else {
+                        //For IE Browser.
+                        reader.onload = function (e) {
+                            var data = "";
+                            var bytes = new Uint8Array(e.target.result);
+                            for (var i = 0; i < bytes.byteLength; i++) {
+                                data += String.fromCharCode(bytes[i]);
+                            }
+                            ProcessExcelQuestion(data);
+                        };
+                        reader.readAsArrayBuffer(fileUpload.files[0]);
+                    }
+                } else {
+                    alert("This browser does not support HTML5.");
+                }
+            } else {
+                alert("Please upload a valid Excel file.");
+            }
+        });
+
+        $(".card-body .row #uploadAnswer").click(function () {
+            //Reference the FileUpload element.
+            var fileUpload = $("#fileUploadAnswer")[0];
+
+            //Validate whether File is valid Excel file.
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+            if (regex.test(fileUpload.value.toLowerCase())) {
+                if (typeof (FileReader) != "undefined") {
+                    var reader = new FileReader();
+
+                    //For Browsers other than IE.
+                    if (reader.readAsBinaryString) {
+                        reader.onload = function (e) {
+                            ProcessExcelAnswer(e.target.result);
+                        };
+                        reader.readAsBinaryString(fileUpload.files[0]);
+                    } else {
+                        //For IE Browser.
+                        reader.onload = function (e) {
+                            var data = "";
+                            var bytes = new Uint8Array(e.target.result);
+                            for (var i = 0; i < bytes.byteLength; i++) {
+                                data += String.fromCharCode(bytes[i]);
+                            }
+                            ProcessExcelAnswer(data);
+                        };
+                        reader.readAsArrayBuffer(fileUpload.files[0]);
+                    }
+                } else {
+                    alert("This browser does not support HTML5.");
+                }
+            } else {
+                alert("Please upload a valid Excel file.");
+            }
+        });
+
+        function ProcessExcelQuestion(data) {
+            //Read the Excel File data.
+            var workbook = XLSX.read(data, {
+                type: 'binary'
+            });
+
+            //Fetch the name of First Sheet.
+            var firstSheet = workbook.SheetNames[0];
+
+            //Read all rows from First Sheet into an JSON array.
+            var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+
+            //Create a HTML Table element. tu du lieu gui len
+            var table = $("<table />");
+            table[0].border = "1";
+
+            //Add the header row.
+            var row = $(table[0].insertRow(-1));
+
+            //Add the header cells.
+            var headerCell = $("<th />");
+            headerCell.html("Id");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Content");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Level");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Point");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Category Id");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Question Type Id");
+            row.append(headerCell);
+
+            //Add the data rows from Excel file.
+            for (var i = 0; i < excelRows.length; i++) {
+                //Add the data row.
+                var row = $(table[0].insertRow(-1));
+
+                //Add the data cells.
+                var cell = $("<td class='id' />");
+                cell.html(excelRows[i].Id);
+                row.append(cell);
+
+                cell = $("<td class='content'/>");
+                cell.html(excelRows[i].Content);
+                row.append(cell);
+
+                cell = $("<td class='level'/>");
+                cell.html(excelRows[i].Level);
+                row.append(cell);
+
+                cell = $("<td class='point'/>");
+                cell.html(excelRows[i].Point);
+                row.append(cell);
+
+                cell = $("<td class='categoryId'/>");
+                cell.html(excelRows[i].Category);
+                row.append(cell);
+
+                cell = $("<td class='questionType'/>");
+                cell.html(excelRows[i].Type);
+                row.append(cell);
+            }
+
+            var dvExcel = $("#dvExcelQuestion");
+            dvExcel.html("");
+            dvExcel.append(table);
+        };
+
+        function ProcessExcelAnswer(data) {
+            //Read the Excel File data.
+            var workbook = XLSX.read(data, {
+                type: 'binary'
+            });
+
+            //Fetch the name of First Sheet.
+            var firstSheet = workbook.SheetNames[0];
+
+            //Read all rows from First Sheet into an JSON array.
+            var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+
+            //Create a HTML Table element.
+            var table = $("<table />");
+            table[0].border = "1";
+
+            //Add the header row.
+            var row = $(table[0].insertRow(-1));
+
+            //Add the header cells.
+            var headerCell = $("<th />");
+            headerCell.html("Id");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Content");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Correct");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Question Id");
+            row.append(headerCell);
+
+
+            //Add the data rows from Excel file.
+            for (var i = 0; i < excelRows.length; i++) {
+                //Add the data row.
+                var row = $(table[0].insertRow(-1));
+
+                //Add the data cells.
+                var cell = $("<td class='idAns' />");
+                cell.html(excelRows[i].Id);
+                row.append(cell);
+
+                cell = $("<td class='contentAns'/>");
+                cell.html(excelRows[i].Content);
+                row.append(cell);
+
+                cell = $("<td class='correct'/>");
+                cell.html(excelRows[i].Correct);
+                row.append(cell);
+
+                cell = $("<td class='questionId'/>");
+                cell.html(excelRows[i].Question);
+                row.append(cell);
+
+            }
+
+            var dvExcel = $("#dvExcelAnswer");
+            dvExcel.html("");
+            dvExcel.append(table);
+        };
+    </script>
+    <script type="text/javascript">
+        $("#click").click(function () {
+            var id = $(".id");
+            var content = $(".content");
+            var level = $(".level");
+            var point = $(".point");
+            var categoryId = $(".categoryId");
+            var questionType = $(".questionType");
+            var contentAns = $(".contentAns");
+            var correctAns = $(".correct");
+            var questionId = $(".questionId");
+
+            var data = [];
+
+            var ans = [];
+            for (let i = 0; i < content.length; i++) {
+                for (let j = 0; j < contentAns.length; j++) {
+                    if ($(questionId[j]).text() == $(id[i]).text()) {
+                        let answerTiny = {};
+                        answerTiny["content"] = $(contentAns[j]).text();
+                        answerTiny["correct"] = $(correctAns[j]).text().toLowerCase();
+                        answerTiny["questionId"] = $(questionId[j]).text();
+                        ans.push(answerTiny);
+                    }
+                }
+                let quest = {};
+                quest["content"] = $(content[i]).text();
+                quest["level"] = $(level[i]).text();
+                quest["point"] = $(point[i]).text();
+                quest["categoryId"] = $(categoryId[i]).text();
+                quest["questionTypeValue"] = $(questionType[i]).text();
+                quest["answerDTOS"] = ans;
+                data.push(quest);
+                var ans = []
+
+            }
+            /*            console.log(JSON.stringify(data));*/
+
+            $.ajax({
+                url: "http://localhost:8080/api/admin/question/byfile",
+                type: 'post',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                dataType: 'text',
+                success: function () {
+                    window.location.href = window.location.origin + "/admin/question"
+                }
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

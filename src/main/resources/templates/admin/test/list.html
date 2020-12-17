@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="admin/common/template">
+<head>
+    <meta charset="UTF-8"/>
+    <title>LIST CATEGORY</title>
+
+</head>
+<body>
+<div class="container-fluid" layout:fragment="body">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Quản lý bài thi</h1>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <!-- Card Body -->
+                <div class="card-body">
+
+                    <div class="container" style="max-width: 100%">
+                        <div class="">
+                            <nav class="navbar navbar-light bg-light  col-lg-12">
+                                <form class="form-inline">
+                                    <input class="form-control" style="width: 600px; margin-right: 10px"  type="search" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                                </form>
+                            </nav>
+                            <br>
+                            <br>
+                            <h3>Theo chủ đề </h3>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    Tất cả
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">java</a>
+                                    <a class="dropdown-item" href="#">java core</a>
+                                    <a class="dropdown-item" href="#">java spring</a>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <h3>Danh sác bài thi </h3>
+                        <form th:action="@{/admin/test/add}" method="get">
+                            <button type="submit" class="btn btn-outline-primary" >Thêm bài thi </button>
+                        </form>
+
+                        <table class="table">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Số thứ tự</th>
+                                <th>Tên bài thi</th>
+                                <th>Ngày cập nhập</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="Test,TestStat : ${listTest}">
+                                <td th:utext="${TestStat.index+1}"></td>
+                                <td th:utext="${Test.name}"></td>
+                                <td th:utext="${Test.createDate}"></td>
+                                <td > <a th:href="@{'/admin/test/'+${Test.id}}">Xem chi tiết</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="chart-area">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+</div>
+<!--<script>-->
+<!--    function onclickFunction(id) {-->
+<!--        if (confirm("Delete Category?") == true) {-->
+<!--            $.ajax({-->
+<!--                type: "delete",-->
+<!--                url: "http://localhost:8080/api/admin/category/" + id,-->
+<!--                dataType: "text",-->
+<!--                success: function () {-->
+<!--                    window.location.reload();-->
+<!--                },-->
+<!--                error: function (xhr, ajaxOptions, thrownError) {-->
+<!--                    console.log(xhr);-->
+<!--                }-->
+<!--            });-->
+<!--        } else {-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+</body>
+</html>

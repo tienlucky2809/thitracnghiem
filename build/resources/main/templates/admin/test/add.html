@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html layout:decorator="admin/common/template" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <script charset="utf8" defer
+            src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js" type="text/javascript"></script>
+    <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css" rel="stylesheet" type="text/css">
+    <script defer src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+    <script>
+
+        function getDataDropdow() { // lay ra id tu category chuyen xuong servel de lay tat ca Subcategory
+            var categoryID = 0;
+            $("#category-Id").change(function () { // bat su kien thay doi selectio
+                // alert($("#category-Id option:selected").val())
+                categoryID = $("#category-Id option:selected").val(); // lay ra gia tri cua selection
+                console.log('category id : ' + categoryID)
+                var dataToServer = {};                                      // tao ra mang doi tuong json
+                dataToServer['categoryParentId'] = categoryID;                // set su lieu vao mang json
+                console.log("du lieu kieu json gui ve server :" + JSON.stringify(dataToServer))
+
+                $.ajax({
+                    url: window.location.origin + "/api/admin/category/sub",
+                    type: 'post',
+                    data: JSON.stringify(dataToServer),   // su lieu truyen vao
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        $("#subCategoryId").empty();//to reset selection
+                        $("#subCategoryId").append("<option>--SELECT--</option>");
+
+                        for (let i = 0; i < data.length; i++) {
+
+                            $("#subCategoryId").append("<option value=" + data[i].id + ">" + data[i].name + "</option>")
+                        }
+                    }
+                })
+            })
+        }
+
+        function clickButton() {
+            $('#getCategoty').click(function () {
+
+                var subCategoryId = $("#subCategoryId option:selected").val();
+                var level = $("#levelId option:selected").val();
+                console.log('subCategory : ' + subCategoryId);
+                console.log('level : ' + level);
+
+                var dataToServer = {};
+                dataToServer['level'] = level;
+                dataToServer['categoryId'] = subCategoryId;
+                console.log('du lieu gui len servel : ' + JSON.stringify(dataToServer))
+
+                $.ajax({
+                    url: window.location.origin + "/api/admin/question/search",
+                    type: 'post',
+                    data: JSON.stringify(dataToServer),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log('so luong phan tu : ' + data.length)
+                        for (let i = 0; i < data.length; i++) {
+                            console.log(data[i])
+                        }
+                        var ListQT = data.map(question => {
+                            return {
+                                id: question.id,
+                                content: question.content,
+                                answerDTOS: `${question.answerDTOS.content}`,
+                                point: question.point,
+
+                            }
+                        });
+                        table = $('#tableQuestion').DataTable({
+                            "bDestroy": true,
+                            select: {
+                                style: 'multi',
+                                selector: 'td:first-child'
+                            },
+                            paging: false,
+                            searching: false,
+                            "processing": true,
+                            data: data,
+                            columns: [
+                                {data: 'id'},
+                                {data: 'content'},
+                                {data: 'answerDTOS'},
+                                {data: 'point'},
+
+                            ],
+                        });
+
+                    }
+                })
+            });
+        }
+
+        $(document).ready(function () {
+            getDataDropdow()
+            clickButton()
+        })
+
+
+    </script>
+</head>
+<body>
+<div class="container-fluid" layout:fragment="body">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex flex-row">
+            <h3 class="font-weight-light">Thêm bài thi : </h3>
+
+        </div>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 flex-row ">
+                    <div class="d-flex justify-content-start">
+                        <b style="margin-left: 10%">Tên bài thi : </b>
+                        <form>
+                            <input style="margin-left: 10%" type="text">
+                        </form>
+                        <b style="margin-left: 5%">Chọn chủ đề : </b>
+                        <select id="category-Id" style="margin-left: 1%">
+                            <option value="0">none</option>
+                            <option th:each="category:${listCategory}" th:utext="${category.name}"
+                                    th:value="${category.id}"></option>
+                        </select>
+                        <b style="margin-left: 5%">Level bài thi : </b>
+                        <form>
+                            <input style="margin-left: 10%" type="text">
+                        </form>
+                    </div>
+                </div>
+                <!-- Card Body -->
+                <div style="max-width: 100%">
+                    <div style="margin-left: 10% ; margin-top: 2%">
+                        <b style="margin-left: 5%">Chọn chủ đề câu hỏi : </b>
+                        <select id="subCategoryId" style="margin-left: 1%">
+                            <option value="0">none</option>
+
+                        </select>
+
+                        <b style="margin-left: 5%">Chọn level câu hỏi : </b>
+                        <select style="margin-left: 1%">
+                            <option value="0">none</option>
+                            <option value="1">level 1</option>
+                            <option value="2">level 2</option>
+                            <option value="3">level 3</option>
+                        </select>
+                        <br>
+                        <button class="btn btn-secondary" id="getCategoty" style="margin-left: 40% ; margin-top: 2%"
+                                type="button">Tìm câu hỏi
+                        </button>
+                    </div>
+                    <div style="margin-top: 3% ;margin-left: 3%">
+                        <b>Danh sách câu hỏi theo chủ đề và level : </b>
+                    </div>
+                    <div class="d-flex justify-content-center" style="margin-top: 1%">
+                        <table class="table" id="tableQuestion" style="margin-left: 3% ; margin-right: 3%">
+                            <thead>
+                            <tr style="text-align: center;">
+                                <th style="vertical-align: middle;">STT</th>
+                                <th style="vertical-align: middle;" width="30%">Nội Dung</th>
+                                <th style="vertical-align: middle;">Câu trả lời</th>
+                                <th style="vertical-align: middle;">Điểm</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <form style="margin-left: 40% ; margin-top: 2%">
+                    <button class="btn btn-info" type="button">Thêm câu hỏi vào bài thi</button>
+                </form>
+                <div class="d-flex flex-column" style="margin-top: 2%">
+                    <div class="p-2" style="margin-left: 3%">
+                        <b>Danh sách câu hỏi đã chọn </b>
+                    </div>
+                    <div class="p-2">
+                        <div class="d-flex justify-content-center">
+                            <table class="table" style="margin-left: 3% ; margin-right: 3%">
+                                <thead>
+                                <tr style="text-align: center;">
+                                    <th style="vertical-align: middle;">STT</th>
+                                    <th style="vertical-align: middle;" width="60%">Nội Dung</th>
+                                    <th style="vertical-align: middle;">Câu trả lời</th>
+                                    <th style="vertical-align: middle;">Điểm</th>
+                                    <th style="vertical-align: middle;">Xóa câu hỏi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr style="text-align: center;" th:each="question : ${questionDTOS}">
+                                    <td style="vertical-align: middle;" th:utext="${questionStat.index} + 1"></td>
+                                    <td style="vertical-align: middle;" th:utext="${question.content}"></td>
+                                    <td>
+                                        <select class="form-control"
+                                                style="width: 154px; vertical-align: middle; margin: unset">
+                                            <option value="">Show Answer</option>
+                                            <option disabled
+                                                    th:class="${answer.correct} ? colorCorrectAns : colorInCorrectAns"
+                                                    th:each="answer : ${question.answerDTOS}"
+                                                    th:text="${answer.content}"></option>
+                                        </select>
+                                    </td>
+                                    <td style="vertical-align: middle;" th:utext="${question.createdDate}"></td>
+                                    <td style="vertical-align: middle;" th:utext="${question.lastModifiedDate}"></td>
+                                    <td style="vertical-align: middle;"><a
+                                            th:href="@{'/admin/question/'+ ${question.id}}">Edit</a> || <a
+                                            href="#" th:onclick="|onclickFunction('${question.id}')|">Delete</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-2" style="margin-left: 3%">
+                    <b>Số lượng câu hỏi đã chọn : </b>
+                </div>
+                <div class="p-2" style="margin-left: 3%">
+                    <b>Tổng số điểm của các câu hỏi đã chọn : </b>
+                </div>
+                <div class="p-2" style="margin-left: 40% ; margin-top: 2%">
+                    <form>
+                        <form>
+                            <button class="btn btn-info" type="button">Hoàn thiện bài thi</button>
+                        </form>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pie Chart -->
+</div>
+<!-- Content Row -->
+</div>
+</body>
+</html>

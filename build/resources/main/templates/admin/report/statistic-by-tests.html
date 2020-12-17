@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="admin/common/template">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ADD CATEGORY</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+<div class="container-fluid" layout:fragment="body">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Thống kê bài test</h1>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+
+                </div>
+                <!-- Card Body -->
+
+                <div class="card-body container">
+
+                    <div layout:fragment="content" class="kt-portlet kt-portlet--mobile">
+                        <div class="kt-portlet">
+                            <div class="kt-portlet__head">
+                                <div class="kt-portlet__head-label">
+												<span class="kt-portlet__head-icon kt-hidden">
+													<i class="la la-gear"></i>
+												</span>
+                                    <h3 class="kt-portlet__head-title">
+                                        View Data on Amchart
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="kt-portlet__body">
+                                <div id="kt_amcharts_8" style="height: 500px;"></div>
+                            </div>
+                        </div>
+
+                        <!--end: Datatable -->
+                        <link href="http://www.amcharts.com/lib/3/plugins/export/export.css" rel="stylesheet"
+                              type="text/css"/>
+
+                        <!--begin::Page Vendors(used by this page) -->
+                        <script src="http://www.amcharts.com/lib/3/amcharts.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/serial.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/radar.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/pie.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/plugins/tools/polarScatter/polarScatter.min.js"
+                                type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/plugins/animate/animate.min.js"
+                                type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/plugins/export/export.min.js"
+                                type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/themes/light.js" type="text/javascript"></script>
+
+                        <!--end::Page Vendors -->
+
+                        <!--begin::Page Scripts(used by this page) -->
+                        <!-- call API-->
+                        <script>
+                            $.ajax({
+                                url: '/api/statistic/tests',
+                                method: 'GET'
+                            }).done(function (data) {
+                                AmCharts.makeChart("kt_amcharts_8", {
+                                    "type": "pie",
+                                    "titleField": "name",
+                                    "valueField": "totalTests",
+                                    "legend": {
+                                        "equalWidths": false,
+                                        "valueAlign": "left",
+                                        "valueWidth": 120
+                                    },
+                                    "dataProvider": data
+                                });
+                            }).fail(function (error) {
+                                console.log(error);
+                            });
+
+
+                        </script>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+</div>
+</body>
+</html>

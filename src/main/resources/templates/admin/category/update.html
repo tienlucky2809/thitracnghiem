@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html layout:decorator="admin/common/template" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>UPDATE CATEGORY</title>
+    <script defer src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    <script th:src="@{/admin/js/validate-category.js}"></script>
+</head>
+<body>
+<div class="container-fluid" layout:fragment="body">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">UPDATE CATEGORY</h1>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                </div>
+                <!-- Card Body -->
+                <div class="card-body container">
+                    <form id="submit" method="post"
+                          th:action="@{/admin/category}" th:object="${categoryDTO}">
+                        <div class="form-group">
+                            <label>Name of Category:</label>
+                            <input th:field="*{id}" type="hidden">
+                            <input class="form-control" multiple placeholder="Enter name of Category"
+                                   style="height: 50px"
+                                   th:field="*{name}" type="text">
+                        </div>
+                        <button class="btn btn-primary" style="align-items: center" type="submit">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+</div>
+</body>
+</html>

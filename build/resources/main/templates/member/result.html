@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html layout:decorator="member/common/template" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fresher </title>
+    <link rel="stylesheet" th:href="@{/member/css/main.css}" type="text/css">
+</head>
+<body>
+<div class="transition-group" layout:fragment="body">
+    <div class="section-content" style="height: auto !important; min-height: 0px !important;">
+        <div class="bg-grey">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                        <div class="bg-white bottom-result-chapter mg-top-20 border-r-5">
+                            <div>
+                                <div class="info-result text-center">
+                                    <div class="mg-top-10"><p class=" no-margin font-size-40" style="color: #f4b619"
+                                                              th:utext="'CHÚC MỪNG '+ ${#request.userPrincipal.name}">
+                                    </p>
+                                        <p class="font-size-24 font-roboto-b no-margin" style="color: #1c606a">BẠN ĐÃ
+                                            HOÀN THÀNH BÀI TEST</p>
+                                    </div>
+                                    <div class="mg-top-10"><p class="no-margin font-size-32"
+                                                              th:utext="'SỐ ĐIỂM ' + ${userDoingTestDTO.point}"></p>
+                                        <p class="no-margin"><span class="font-size-24 font-roboto-b">
+                                        <p class="font-size-20 font-roboto-b color-grey-1">
+                                        </p></span></p></div>
+                                </div>
+                                <p class="text-center mg-top-15 mg-bottom-15"><a
+                                        class="btn-orange color-white font-size-18 btn-action"
+                                        style="width: 140px; font-size: 13px;"
+                                        th:href="@{/homepage}">Về
+                                    trang chủ</a></p></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

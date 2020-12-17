@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="admin/common/template">
+<head>
+    <meta charset="UTF-8"/>
+    <title>ADD CATEGORY</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.js"></script>
+
+</head>
+<body>
+<div class="container-fluid" layout:fragment="body" th:object="${test}">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex flex-row">
+            <h2 class="font-weight-light">Chi tiết bài thi : </h2>
+            <h2 class="font-weight-light" &emsp th:utext="${test.name}"></h2>
+        </div>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 flex-row ">
+                    <div class="d-flex justify-content-end">Button</div>
+                    <div class="d-flex justify-content-around">
+                        <div >
+                            <div class="d-flex flex-row" th:object="${category}">
+                                <p class="font-weight-bold">Chủ đề : </p>
+                                <p class="font-weight-light" style="margin-left: 10px" th:utext="${category.name}"></p>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <p class="font-weight-bold">Level: </p>
+                                <p class="font-weight-light" style="margin-left: 10px" th:utext="${test.level}"></p>
+                            </div>
+                        </div>
+                        <div >
+                            <div class="d-flex flex-row">
+                                <p class="font-weight-bold">Thời gian làm bài : </p>
+                                <p class="font-weight-light" style="margin-left: 10px" th:utext="${test.time}"></p>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <p class="font-weight-bold">Số lượng câu hỏi : </p>
+                                <p class="font-weight-light" style="margin-left: 10px" th:utext="${test.number_question}"></p>
+                            </div>
+                        </div>
+                        <div >
+                            <div class="d-flex flex-row">
+                                <p class="font-weight-bold">Thang điểm : </p>
+                                <p class="font-weight-light" style="margin-left: 10px" th:utext="${test.point}"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Card Body -->
+                <div  style="margin-right: 40%" >
+                    <div class="d-flex justify-content-center" style="margin-top: 5%">
+                        <div class="d-flex flex-column">
+                            <script>
+                    $(document).ready(function () {
+                        var listQuestion = $(".list-question");
+                        console.log('so luong cau hoi :'+listQuestion.length)
+                        for (let i = 1;i<= listQuestion.length ; i++){ // duyet tat ca  cac cau hoi
+                            // var button = $('button[id=questionId-'+i+']')
+                            // console.log($('button[id=questionId-'+i+']'))
+                            // button.click(function () {
+                            //     alert($('p[id=type-question'+i+']').text())
+                            // })
+                            if($('input[id=type-question-'+i+']').val()==1){
+                                $('input[id=input-answers-'+i+']').prop('type','radio');
+                                console.log($('input[id=input-answers-'+i+']').val())
+                            } if ($('input[id=type-question-'+i+']').val()==2){
+                                $('input[id=input-answers-'+i+']').prop('type','checkbox');
+                                console.log($('input[id=input-answers-'+i+']').val())
+                            } if ($('input[id=type-question-'+i+']').val()==3){
+                                $('input[id=input-answers-'+i+']').prop('type','text');
+                                console.log($('input[id=input-answers-'+i+']'))
+                            }
+                        }
+                    })
+                </script>
+                            <div class="question">
+                <ul class="list-question" th:each="question,Start :${list}" >
+                    <li class="conten-question" style="margin-top: 5%">
+                        <div class="d-flex " th:id="'questionId-' + ${Start.index + 1}">
+                            <p >Câu  </p>
+                            <p th:utext="${Start.index+1}"></p><p>:</p>
+                            <p>(<b><p th:utext="${question.point}"></p> điểm </b>)</p>
+                            <p  style="margin-left: 10px " th:utext="${question.content}"></p>
+                            <input  th:id="'type-question-'+ ${Start.index + 1}" th:value="${question.questionTypeValue}" type="hidden">
+                        </div>
+                    </li>
+                    <li class="answers-question" >
+                        <form>
+                            <ul class="list-answers-qt" style="list-style-type:none;" th:each="answer : ${question.answerDTOS}">
+                                <li>
+                                    <input th:id="'input-answers-'+${Start.index + 1}"  type="radio" class="form-check-input" name="optradio" th:utext="${answer.content}"><br>
+                                </li>
+                            </ul>
+                        </form>
+                    </li>
+                </ul>
+                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+</div>
+</body>
+</html>

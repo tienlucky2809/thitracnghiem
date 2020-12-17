@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html layout:decorator="member/common/template" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fresher</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/member/css/main.css}">
+</head>
+<body>
+<div class="transition-group" layout:fragment="body">
+    <div class="section-content" style="height: auto !important; min-height: 0px !important;">
+        <div style="height: auto !important;">
+            <div class="bg-grey" style="height: auto !important;">
+                <div class="" id="quizdetail">
+                    <div class="container">
+                        <nav class="menu menu--adsila  bg-white"><a class="text-center menu__item active"
+                                                                    href="#"><img
+                                th:src="@{/member/images/new_icon_mon_toan.png}"><span
+                                class="menu__item-name font-size-14 subj_1"
+                                style="color: rgb(38, 90, 146);">JAVA</span></a><a
+                                class="text-center menu__item"
+                                href="#"><img
+                                th:src="@{/member/images/new_icon_mon_ly.png}"><span
+                                class="menu__item-name font-size-14 subj_2"
+                                style="color: rgb(136, 171, 53);">PHP</span></a><a
+                                class="text-center menu__item"
+                                href="#"><img
+                                th:src="@{/member/images/new_icon_mon_hoa.png}"><span
+                                class="menu__item-name font-size-14 subj_3"
+                                style="color: rgb(238, 94, 101);">C Sharp</span></a><a
+                                class="text-center menu__item"
+                                href="#"><img
+                                th:src="@{/member/images/new_icon_mon_sinh.png}"><span
+                                class="menu__item-name font-size-14 subj_6"
+                                style="color: rgb(89, 147, 121);">Javascript</span></a>
+                        </nav>
+                    </div>
+                </div>
+                <div class="container color-555" style="height: auto !important;"><h3
+                        class="font-size-18 mg-top-25 mg-bottom-10 text-uppercase font-roboto-b"
+                        style="color: rgb(134, 169, 55);"> Đề kiểm tra JAVA</h3>
+                    <div class="row" style="height: auto !important;">
+                        <div class="col-sm-8 custom-col">
+                            <div class="list-exam">
+                                <div class="bg-white border-r-4 mg-bottom-20 border-ccc"><p
+                                        class="font-size-18 font-roboto-b color-orange text-uppercase text-center">Đề
+                                    kiểm tra JAVA</p>
+                                    <ul class="list-style-none">
+                                        <li class="exam-item"><img th:src="@{/member/images/exam.png}">
+                                            <div class="block-content-exam-item"><p class="test">
+                                                <a class="url-root" href="#"><b>Java Core cho người bắt đầu</b></a></p>
+                                                <div class="row  font-size-14">
+                                                    <div class="col-sm-6"><img th:src="@{/member/images/icon-quiz.png}"
+                                                                               class="icon-question">50 câu <span
+                                                            class="vertict-line"></span><span>Đây là ghi chú</span>
+                                                    </div>
+                                                    <div class="col-sm-6"><a class="do-exam-action color-green"
+                                                                             th:href="@{/doing-test/1}"><i
+                                                            class="fa fa-arrow-right" aria-hidden="true"></i> <b>Vào
+                                                        thi!</b></a></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="exam-item"><img th:src="@{/member/images/exam.png}">
+                                            <div class="block-content-exam-item"><p class="test">
+                                                <a class="url-root" href="#"><b>Java Core cho người lâu năm</b></a></p>
+                                                <div class="row  font-size-14">
+                                                    <div class="col-sm-6"><img th:src="@{/member/images/icon-quiz.png}"
+                                                                               class="icon-question">50 câu <span
+                                                            class="vertict-line"></span><span>Đây là ghi chú</span>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <a class="do-exam-action color-green" href="#"><i
+                                                                class="fa fa-arrow-right" aria-hidden="true"></i> <b>Vào
+                                                            thi!</b></a></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="exam-item"><img th:src="@{/member/images/exam.png}">
+                                            <div class="block-content-exam-item"><p class="test">
+                                                <a class="url-root" href="#"><b>Java Spring cho người bắt đầu</b></a>
+                                            </p>
+                                                <div class="row  font-size-14">
+                                                    <div class="col-sm-6"><img th:src="@{/member/images/icon-quiz.png}"
+                                                                               class="icon-question">50 câu <span
+                                                            class="vertict-line"></span><span>Đây là ghi chú</span>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <a class="do-exam-action color-green" href="#"><i
+                                                                class="fa fa-arrow-right" aria-hidden="true"></i> <b>Vào
+                                                            thi!</b></a></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="exam-item"><img th:src="@{/member/images/exam.png}">
+                                            <div class="block-content-exam-item"><p class="test">
+                                                <a class="url-root" href="#"><b>Java Spring cho người lâu năm</b></a>
+                                            </p>
+                                                <div class="row  font-size-14">
+                                                    <div class="col-sm-6"><img th:src="@{/member/images/icon-quiz.png}"
+                                                                               class="icon-question">50 câu <span
+                                                            class="vertict-line"></span><span>Đây là ghi chú</span>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <a class="do-exam-action color-green" href="#"><i
+                                                                class="fa fa-arrow-right" aria-hidden="true"></i> <b>Vào
+                                                            thi!</b></a></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="exam-item"><img th:src="@{/member/images/exam.png}">
+                                            <div class="block-content-exam-item"><p class="test">
+                                                <a class="url-root" href="#"><b>Java tổng hợp</b></a></p>
+                                                <div class="row  font-size-14">
+                                                    <div class="col-sm-6"><img th:src="@{/member/images/icon-quiz.png}"
+                                                                               class="icon-question">50 câu <span
+                                                            class="vertict-line"></span><span>Đây là ghi chú</span>
+                                                    </div>
+                                                    <div class="col-sm-6"><a class="do-exam-action color-green"
+                                                                             href="#"><i
+                                                            class="fa fa-arrow-right" aria-hidden="true"></i> <b>Vào
+                                                        thi!</b></a></div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <p class="text-center font-size-14 no-margin padding-10"><a class="color-grey">Xem
+                                        tất cả đề kiểm tra <i class=" font-size-16 fa fa-angle-right"
+                                                              aria-hidden="true"></i></a></p></div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-4 custom-col"
+                             style="height: auto !important; min-height: 0px !important;">
+                            <div class="block-type-exam bg-white border-r-4 font-size-14"><p
+                                    class="no-margin text-center"><b>LỰA CHỌN LOẠI ĐỀ</b></p>
+                                <ul class="list-style-none">
+                                    <li class=""><a class="type-exam"
+                                                    href="#"><span>ĐV</span>
+                                        Đề kiểm tra đầu vào</a></li>
+                                    <li class=""><a class="type-exam"
+                                                    href="#"><span>BĐ</span>
+                                        Đề kiểm tra cho người bắt đầu</a></li>
+                                    <li class=""><a class="type-exam"
+                                                    href="#"><span>LN</span>
+                                        Đề kiểm tra cho người lâu năm</a></li>
+                                    <li class=""><a class="type-exam"
+                                                    href="#"><span>15p</span>
+                                        Đề kiểm tra nhanh</a></li>
+                                    <li class=""><a class="type-exam"
+                                                    href="#"><span>45</span>
+                                        Đề kiểm tra 45 phút</a></li>
+                                    <li class=""><a class="type-exam"
+                                                    href="#"><span>60</span>
+                                        Đề kiểm tra 60 phút</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

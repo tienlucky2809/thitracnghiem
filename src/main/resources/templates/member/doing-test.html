@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html layout:decorator="member/common/template" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fresher </title>
+    <script src="https://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" th:href="@{/member/css/main.css}" type="text/css">
+    <style>
+        .timer {
+            display: inline-block;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        var min = 0;
+        var max = 3;
+        var count = parseInt([[${testDTO.time}]]) * 60 * 1000;
+        var counter = setInterval(timer, 1000);
+        var isPass;
+        $(document).ready(function () {
+            setHidden(min, max);
+            $("#next").click(function () {
+                min += 3;
+                max += 3;
+                if (max >= $(".single-quizes").length) {
+                    $("#next").attr("disabled", true);
+                }
+                if (min > 0) {
+                    $("#previous").attr("disabled", false);
+                }
+                setHidden(min, max);
+            });
+            $("#previous").click(function () {
+
+                min -= 3;
+                max -= 3;
+                if (max < $(".single-quizes").length) {
+                    $("#next").attr("disabled", false);
+                }
+                if (min <= 0) {
+                    $("#previous").attr("disabled", true);
+                }
+                setHidden(min, max);
+            });
+            if (min <= 0) {
+                $("#previous").attr("disabled", true);
+            }
+        });
+
+        $(document).ready(function () {
+            var countQuest = $(".single-quizes");
+            for (let i = 1; i <= countQuest.length; i++) {
+                if ($('input[id=typeId-' + i + ']').val() == 1) {
+                    $('input[name=quest' + i + ']').prop('type', 'radio');
+                }
+                if ($('input[id=typeId-' + i + ']').val() == 2) {
+                    $('input[name=quest' + i + ']').prop('type', 'checkbox');
+                }
+                if ($('input[id=typeId-' + i + ']').val() == 3) {
+                    $('input[name=quest' + i + ']').prop('type', 'text');
+                }
+            }
+        });
+
+        function setHidden(min, max) {
+            var countQuest = $(".single-quizes");
+            for (let i = 1; i <= countQuest.length; i++) {
+                if (i > min && i <= max) {
+                    $('div[id=questionId-' + i + ']').attr("hidden", false);
+                    continue;
+                }
+                $('div[id=questionId-' + i + ']').attr("hidden", true);
+            }
+        }
+
+        function submit() {
+            var countQuest = $(".single-quizes");
+            var userAnswer = '';
+            var correctAns = [];
+            var numCorrect = 0;
+            var numInCorrect = 0;
+            var send = {};
+
+            for (let i = 1; i <= countQuest.length; i++) {
+                var answ = {};
+                answ["question_id"] = $('input[id=questId-' + i + ']').val();
+                answ["userDoingTest_id"] = [[${testDTO.id}]]
+                if ($('input[name=quest' + i + ']').attr('type') == 'radio') {
+                    userAnswer = $('input[name=quest' + i + ']:checked').val();
+                    let ans = [];
+
+                    /*                    console.log(userAnswer + " " + i)*/
+                    if (userAnswer == 'true') {
+                        numCorrect++;
+                    } else {
+                        numInCorrect++;
+                    }
+                    ans.push($('label[id=content' + $('input[name=quest' + i + ']:checked').attr("id") + ']').text());
+                    answ["content"] = ans;
+
+                }
+                if ($('input[name=quest' + i + ']').attr('type') == 'text') {
+                    let ans = [];
+                    userAnswer = $('input[name=quest' + i + ']').val();
+                    let count = $('input[name=quest' + i + ']');
+                    for (let j = 1; j <= count.length; j++) {
+                        let a = $('input[id=ans' + i + j + ']').val();
+                        if (a == count.val()) {
+                            numCorrect++;
+                        } else {
+                            numInCorrect++;
+                        }
+                    }
+                    ans.push($('input[name=quest' + i + ']').val());
+                    answ["content"] = ans;
+                }
+                if ($('input[name=quest' + i + ']').attr('type') == 'checkbox') {
+                    let count = $('input[name=quest' + i + ']');
+                    let countTrue = 0;
+                    let ans = [];
+                    for (let j = 1; j <= count.length; j++) {
+                        if ($('input[id=ans' + i + j + ']').val() == "true") {
+                            countTrue++;
+                        }
+                    }
+                    let checkTrue = 0;
+                    for (let j = 1; j <= count.length; j++) {
+                        let a = $('input[id=ans' + i + j + ']:checked').val();
+                        if (a == "true") {
+                            ans.push($('label[id=contentans' + i + j + ']').text());
+                            checkTrue++;
+                        }
+                        if (a == "false") {
+                            ans.push($('label[id=contentans' + i + j + ']').text());
+                            checkTrue--;
+                        }
+                    }
+                    if (checkTrue == countTrue) {
+                        numCorrect++;
+                    } else {
+                        numInCorrect++;
+                    }
+                    answ["content"] = ans;
+                    checkTrue = 0;
+                }
+                answ["point"] = Math.round((numCorrect / countQuest.length) * 10);
+
+                if (numCorrect < [[${testDTO.passing_point}]]) {
+                    isPass = false;
+                }
+                if (numCorrect >= [[${testDTO.passing_point}]]) {
+                    isPass = true;
+                }
+                answ["isPass"] = isPass;
+                correctAns.push(answ);
+
+            }
+            console.log("So cau dung la: " + numCorrect);
+            console.log("So cau sai la: " + numInCorrect);
+            console.log("Diem pass la: " + [[${testDTO.passing_point}]]);
+
+            console.log(JSON.stringify(correctAns))
+            $.ajax({
+                url: window.location.origin + "/api/userdoingtest/submit",
+                type: 'post',
+                data: JSON.stringify(correctAns),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    window.location.href = window.location.origin + "/result/" + data.id
+                }
+            })
+        }
+
+        function timePart(val, text, color = "black") {
+            return `<h4 class="timer" style="color:${color};">${val}<div>${text}</div></h4>`
+        }
+
+        function timer() {
+            count = count - 1000;
+            var hours = Math.floor((count % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((count % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((count % (1000 * 60)) / 1000);
+            if (count <= 0) {
+                clearInterval(counter);
+                submit();
+                return;
+            }
+            let res = timePart(hours, 'hours') + timePart(minutes, 'Mins') + timePart(seconds, 'Seconds', 'red');
+            document.getElementById("timer").innerHTML = res // watch for spelling
+        }
+    </script>
+</head>
+<body>
+<div class="transition-group" layout:fragment="body">
+    <div class="section-content" style="height: auto !important; min-height: 0px !important;">
+        <div class="bg-grey">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <div class="quiz-page bg-white mg-bottom-20 mg-top-20 border-r-6 padding-15">
+                                    <div class="mg-bottom-15 multi-quiz">
+                                        <th:block th:each="question, questionStat : ${testDTO.questionDTOS}">
+                                            <div class="single-quizes"
+                                                 th:id="'questionId-' + ${questionStat.index + 1}">
+                                                <input th:id="'typeId-' + ${questionStat.index + 1}"
+                                                       th:value="${question.questionTypeValue}"
+                                                       type="hidden">
+                                                <input th:id="'questId-' + ${questionStat.index + 1}"
+                                                       th:value="${question.id}"
+                                                       type="hidden">
+                                                <div class="item-question active">
+                                                    <div>
+                                                        <div id="quiz-single">
+                                                            <div>
+                                                                <div class="vn-tit-question"><strong class="cl5 fl"
+                                                                                                     th:utext="'Câu ' + ${questionStat.index + 1}"></strong>
+                                                                </div>
+                                                                <div class="question-content" id="question-content">
+                                                                    <div class="content-quiz mg-top-10">
+                                                                        <p th:utext="${question.content}">
+                                                                        </p>
+                                                                    </div>
+
+                                                                    <div class="vn-box-answer"
+                                                                         style="margin-left: 20px">
+                                                                        <th:block
+                                                                                th:each="answer, answerStat : ${question.answerDTOS}">
+                                                                            <div class="row">
+                                                                                <div class="mg-bottom-30 col-xs-12 col-md-12 col-sm-12 "
+                                                                                >
+                                                                                    <th:block
+                                                                                            th:if="${question.questionTypeValue != 3}">
+                                                                                        <input
+                                                                                                th:id="'ans'+${questionStat.index + 1}+${answerStat.index + 1} "
+                                                                                                th:name="'quest'+${questionStat.index + 1}"
+
+                                                                                                th:value="${answer.correct}">
+                                                                                        <label style="font-weight: lighter"
+                                                                                               th:id="'contentans'+${questionStat.index + 1}+${answerStat.index + 1}"
+                                                                                               th:utext="${answer.content}"></label>
+
+                                                                                    </th:block>
+                                                                                    <th:block
+                                                                                            th:if="${question.questionTypeValue == 3}">
+
+                                                                                        <input
+                                                                                                th:id="'ans'+${questionStat.index + 1}+${answerStat.index + 1} "
+                                                                                                th:value="${answer.content}"
+                                                                                                type="hidden">
+                                                                                        <input
+                                                                                                th:name="'quest'+${questionStat.index + 1}"
+                                                                                                type="text"><br>
+                                                                                    </th:block>
+                                                                                </div>
+                                                                            </div>
+                                                                        </th:block>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                    <div class="text-center">
+                                        <input class="btn-gray color-white font-size-18 btn-action" id="previous"
+                                               style="width: 100px; font-size: 13px;" type="submit" value="Previous"/>
+                                        <input class="btn-gray color-white font-size-18 btn-action" id="next"
+                                               style="width: 100px; font-size: 13px;" type="submit" value="Next"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="sticky-outer-wrapper released" style="height: 0px;">
+                            <div class="sticky-inner-wrapper"
+                                 style="position: relative; transform: translate3d(0px, 0px, 0px); width: 270px;">
+                                <div class="box-right-exam">
+                                    <div class="bg-white bottom-result-chapter mg-top-20 border-r-4">
+                                        <div class="info-result text-center font-size-14">
+                                            <div class="mg-top-10"><p class=" no-margin">Số câu đã làm</p>
+                                                <p class="font-size-24 font-roboto-b no-margin">2/3</p></div>
+                                            <div class="mg-top-10"><p class="no-margin">Thời gian còn lại</p>
+                                                <div align="center" id="timer"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-center mg-top-15 mg-bottom-15"><a
+                                                class="btn-gray color-white font-size-18 btn-action"
+                                                style="width: 140px; font-size: 13px;">TẠM DỪNG</a><a
+                                                class="btn-orange color-white font-size-18 btn-action" href="#"
+                                                style="width: 140px; font-size: 13px;"
+                                                th:onclick="submit()">NỘP BÀI</a></p>
+                                        <div class="note-exam padding-10 font-size-14" style="display: grid;">
+                                            <p><span></span>Câu đã làm</p>
+                                            <p><span></span>Câu chưa làm</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

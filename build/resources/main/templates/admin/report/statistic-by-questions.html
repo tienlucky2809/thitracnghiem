@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="admin/common/template">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ADD CATEGORY</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <!--new 4 lines-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+    </script>
+
+    <script>
+        $(function () {
+            $("#datepicker1").datepicker();
+        });
+    </script>
+</head>
+<body>
+
+<div class="container-fluid" layout:fragment="body">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Thống kê bài test</h1>
+    </div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Area Chart -->
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+
+                    <p>Ngày Bắt Đầu: <input type="date" id="datepicker"></p>
+
+                    <p>Ngày Kết Thúc: <input type="date" id="datepicker1"></p>
+
+                    <button type="button" id="statistic" class="btn btn-primary">Thống kê</button>
+                </div>
+                <!-- Card Body -->
+
+                <div class="card-body container">
+
+                    <div layout:fragment="content" class="kt-portlet kt-portlet--mobile">
+                        <div class="kt-portlet">
+                            <div class="kt-portlet__head">
+                                <div class="kt-portlet__head-label">
+												<span class="kt-portlet__head-icon kt-hidden">
+													<i class="la la-gear"></i>
+												</span>
+                                    <h3 class="kt-portlet__head-title">
+                                        View Data on Amchart
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="kt-portlet__body">
+                                <div id="kt_amcharts_8" style="height: 500px;"></div>
+                            </div>
+                        </div>
+
+                        <!--end: Datatable -->
+                        <link href="http://www.amcharts.com/lib/3/plugins/export/export.css" rel="stylesheet"
+                              type="text/css"/>
+
+                        <!--begin::Page Vendors(used by this page) -->
+                        <script src="http://www.amcharts.com/lib/3/amcharts.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/serial.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/radar.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/pie.js" type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/plugins/tools/polarScatter/polarScatter.min.js"
+                                type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/plugins/animate/animate.min.js"
+                                type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/plugins/export/export.min.js"
+                                type="text/javascript"></script>
+                        <script src="http://www.amcharts.com/lib/3/themes/light.js" type="text/javascript"></script>
+
+                        <!--end::Page Vendors -->
+
+                        <!--begin::Page Scripts(used by this page) -->
+                        <!-- call API-->
+                        <script>
+                            $("#statistic").click(function () {
+                                var fromDate = $("#datepicker").val();
+                                var toDate = $("#datepicker1").val();
+
+                                if (validate(fromDate, toDate)) {
+                                    $.ajax({
+                                        url: '/api/statistic/questions',
+                                        method: 'GET',
+                                        contentType: "application/json",
+                                        data: {
+                                            "fromDate": fromDate,
+                                            "toDate": toDate
+                                        }
+                                    }).done(function (data) {
+                                        console.log(data.length);
+                                        if (data.length > 0) {
+                                            AmCharts.makeChart("kt_amcharts_8", {
+                                                "type": "pie",
+                                                "titleField": "name",
+                                                "valueField": "totalQuestions",
+                                                "legend": {
+                                                    "equalWidths": false,
+                                                    "valueAlign": "left",
+                                                    "valueWidth": 120
+                                                },
+                                                "dataProvider": data
+                                            });
+                                        } else {
+                                            $( "#kt_amcharts_8").html( "No data" );
+                                        }
+
+                                    }).fail(function (error) {
+                                        console.log(error);
+                                    });
+                                } else {
+                                    alert('chua nhap du thong tin');
+                                }
+                            });
+
+                            function validate(fromDate, toDate) {
+                                if (fromDate == "" || toDate == "") {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+
+                        </script>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Pie Chart -->
+    </div>
+    <!-- Content Row -->
+</div>
+</body>
+</html>

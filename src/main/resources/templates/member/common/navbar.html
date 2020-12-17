@@ -1,0 +1,99 @@
+<div th:fragment="header" xmlns:th="http://www.thymeleaf.org">
+    <div class="section-header">
+        <div class="top-header">
+            <div class=" container">
+                <div class="row">
+                    <div class="col-sm-7 col-md-8 custom-col"><a th:href="@{/homepage}"> <img
+                            height="44" th:src="@{/member/images/logo-new.png}"/></a></div>
+                    <div class="col-sm-5 col-md-4 custom-col">
+                        <!--                        <div th:if="${#request.userPrincipal != null}" >-->
+                        <!--                            <a th:utext="${#request.userPrincipal.name}"></a>-->
+                        <!--                            | &nbsp;| &nbsp;-->
+                        <!--                            <a th:href="@{/logout}">Logout</a>-->
+                        <!--                        </div>-->
+
+                        <!-- Topbar Navbar -->
+
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow" th:if="${#request.userPrincipal  != null}">
+                            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                               href="#" id="userDropdown" role="button">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"
+                                      th:utext="${#request.userPrincipal.name}">Member</span>
+                                <img class="img-profile rounded-circle"
+                                     src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div aria-labelledby="userDropdown"
+                                 class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Activity Log
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" th:href="@{/logout}">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+
+                        <div class="header-not-login" th:if="${#request.userPrincipal  == null}">
+                            <a class="font-roboto-m pull-right  font-size-14"
+                               href="/register"><i
+                                    aria-hidden="true" class="fa fa-check-square-o"></i> Đăng ký</a><a
+                                class="font-roboto-m pull-right login-btn font-size-14"
+                                href="/login"><i aria-hidden="true" class="fa fa-user"></i> Đăng
+                            nhập</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-header bg-green color-white">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div class="section-menu font-size-14">
+                            <ul class="list-style-none">
+                                <li class="zIndex100"><a
+                                        class="active text-uppercase font-roboto-b  color-white"
+                                        th:href="@{/homepage}"><span> <i aria-hidden="true"
+                                                                         class="fa fa-home font-size-22"
+                                                                         style="margin-top:-20px"></i> </span></a>
+                                </li>
+                                <!--                                <li class="zIndex20"><a class="text-uppercase font-roboto-b color-white"
+                                                                                        href="#"><span> &lt;!&ndash; &ndash;&gt;Luyện bài tập
+                                                                    &lt;!&ndash; &ndash;&gt; </span></a></li>-->
+                                <li class="zIndex20"><a class="text-uppercase font-roboto-b color-white"
+                                                        th:href="@{/de-thi}"><span> <!-- -->Đề thi
+                                    <!-- --> </span></a></li>
+                                <li class="zIndex20"><a class="text-uppercase font-roboto-b color-white"
+                                                        href="#"><span> <!-- -->Ôn lý thuyết
+                                    <!-- --> </span></a></li>
+                                <li class="zIndex20"><a class="text-uppercase font-roboto-b color-white"
+                                                        href="#"><span><i
+                                        class="fa fa-star fa-rotate-90 slidecaption"
+                                        style="position:absolute;top:0px;left:103px;color:yellow"></i>
+                                    <!-- -->Thi Đấu<!-- --> </span></a></li>
+                                <li class="zIndex20"><a class="text-uppercase font-roboto-b color-white"
+                                                        href="#"><span> <!-- -->Giới thiệu
+                                    <!-- --> </span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
